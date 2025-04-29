@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>🌟 CloudNotes App</title>
+    <style>
+        body {
+            background: linear-gradient(to right, #83a4d4, #b6fbff);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 70vh;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            background-color: white;
+            margin-top: 90px;
+            padding: 40px 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            width: 80%;
+            max-width: 90%;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px 0 0 5px;
+            outline: none;
+            font-size: 16px;
+        }
+
+        .input-file {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px 0 0 5px;
+            outline: none;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 0 5px 5px 0;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #f9f9f9;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .delete-button, .download-button {
+            background-color: #f44336;
+            border: none;
+            margin-left: 30px;
+            padding: 5px 10px;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .delete-button:hover, .download-button:hover {
+            background-color: #d32f2f;
+        }
+
+        .no-notes {
+            text-align: center;
+            color: #666;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        .image-gallery img {
+            width: 100%;
+            max-width: 300px;
+            margin: 10px;
+            border-radius: 8px;
+        }
+
+        .image-item {
+            display: flex;
+            /* flex-direction: column; */
+            align-items: center;
+        }
+
+        .image-item button {
+            margin-top: 10px;
+            background-color: #f44336;
+            border: none;
+            padding: 5px 10px;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .image-item button:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📝 CloudNotes</h1>
+
+    <form action="/" method="POST">
+        <input type="text" name="note" placeholder="Write your note..." required>
+        <button type="submit">Add</button>
+    </form>
+
+    <ul>
+        {% for note in notes %}
+            <li>
+                {{ note.content }}
+                <form action="/delete/{{ note.id }}" method="POST" style="margin: 0;">
+                    <button type="submit" class="delete-button">Delete</button>
+                </form>
+            </li>
+        {% else %}
+            <div class="no-notes">
+                No notes yet. Add one! 🌟
+            </div>
+        {% endfor %}
+    </ul>
+
+    <h2>Upload Image</h2>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <input class="input-file" type="file" name="file" required>
+        <button type="submit">Upload Image</button>
+    </form>
+
+    <h2>Uploaded Images</h2>
+    <div class="image-gallery">
+        {% for image in uploaded_images %}
+            <div class="image-item">
+                <img src="{{ image }}" alt="Uploaded Image">
+                <form action="/delete_image/{{ image.split('/')[-1] }}" method="POST">
+                    <button type="submit" class="delete-button">Delete Image</button>
+                </form>
+                <form action="/download_image/{{ image.split('/')[-1] }}" method="GET">
+                    <button type="submit" class="download-button">Download Image</button>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>
